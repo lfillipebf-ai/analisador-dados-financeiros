@@ -1,0 +1,31 @@
+id,data,categoria,tipo,descricao,valor,forma_pagamento
+1,2026-01-03,Alimentação,Despesa,Supermercado,320.50,Cartão
+2,2026-01-05,Transporte,Despesa,Combustível,180.00,Pix
+3,2026-01-07,Salário,Receita,Salário mensal,4200.00,Transferência
+4,2026-01-10,Lazer,Despesa,Cinema e alimentação,95.00,Cartão
+5,2026-01-12,Moradia,Despesa,Internet,110.00,Pix
+6,2026-01-15,Alimentação,Despesa,Restaurante,87.90,Cartão
+7,2026-01-18,Saúde,Despesa,Farmácia,74.30,Pix
+8,2026-01-20,Freelance,Receita,Serviço de programação,650.00,Pix
+9,2026-01-22,Transporte,Despesa,Aplicativo de transporte,62.40,Cartão
+10,2026-01-25,Moradia,Despesa,Aluguel,1200.00,Transferência
+11,2026-02-03,Alimentação,Despesa,Supermercado,285.70,Cartão
+12,2026-02-05,Transporte,Despesa,Combustível,170.00,Pix
+13,2026-02-07,Salário,Receita,Salário mensal,4200.00,Transferência
+14,2026-02-09,Lazer,Despesa,Streaming,55.90,Cartão
+15,2026-02-12,Moradia,Despesa,Internet,110.00,Pix
+16,2026-02-15,Alimentação,Despesa,Restaurante,112.50,Cartão
+17,2026-02-18,Saúde,Despesa,Consulta,180.00,Pix
+18,2026-02-20,Freelance,Receita,Site institucional,900.00,Pix
+19,2026-02-22,Transporte,Despesa,Aplicativo de transporte,71.20,Cartão
+20,2026-02-25,Moradia,Despesa,Aluguel,1200.00,Transferência
+21,2026-03-03,Alimentação,Despesa,Supermercado,340.80,Cartão
+22,2026-03-05,Transporte,Despesa,Combustível,210.00,Pix
+23,2026-03-07,Salário,Receita,Salário mensal,4200.00,Transferência
+24,2026-03-09,Lazer,Despesa,Games,149.90,Cartão
+25,2026-03-12,Moradia,Despesa,Internet,110.00,Pix
+26,2026-03-15,Alimentação,Despesa,Restaurante,96.40,Cartão
+27,2026-03-18,Saúde,Despesa,Farmácia,92.70,Pix
+28,2026-03-20,Freelance,Receita,Dashboard,750.00,Pix
+29,2026-03-22,Transporte,Despesa,Aplicativo de transporte,68.50,Cartão
+30,2026-03-25,Moradia,Despesa,Aluguel,1200.00,Transferência
