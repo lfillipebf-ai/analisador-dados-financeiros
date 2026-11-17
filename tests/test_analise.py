@@ -6,6 +6,7 @@ from src.analise import (
     calcular_indicadores,
     calcular_resumo_mensal,
     gerar_graficos,
+    salvar_sqlite,
 )
 
 
@@ -197,3 +198,58 @@ def test_carregar_dados_rejeita_id_fracionario(tmp_path):
 
     with pytest.raises(ValueError, match="números inteiros válidos"):
         carregar_dados(arquivo)
+
+
+
+def test_carregar_dados_preserva_ids_inteiros_grandes(tmp_path):
+    arquivo = criar_csv(
+        tmp_path,
+        "id,data,categoria,tipo,descricao,valor,forma_pagamento\n"
+        "9007199254740993,2026-01-03,Alimentação,Despesa,Compra,10,Pix\n",
+    )
+
+    df = carregar_dados(arquivo)
+
+    assert df.loc[0, "id"] == 9007199254740993
+
+
+def test_carregar_dados_rejeita_id_fora_do_intervalo(tmp_path):
+    arquivo = criar_csv(
+        tmp_path,
+        "id,data,categoria,tipo,descricao,valor,forma_pagamento\n"
+        "9223372036854775808,2026-01-03,Alimentação,Despesa,Compra,10,Pix\n",
+    )
+
+    with pytest.raises(ValueError, match="intervalo de inteiros"):
+        carregar_dados(arquivo)
+
+
+def test_salvar_sqlite_persiste_transacoes(tmp_path):
+    df = pd.DataFrame(
+        {
+            "id": [1, 2],
+            "data": pd.to_datetime(["2026-01-03", "2026-01-04"]),
+            "categoria": ["Alimentação", "Salário"],
+            "tipo": ["Despesa", "Receita"],
+            "descricao": ["Compra", "Pagamento"],
+            "valor": [10.50, 100.00],
+            "forma_pagamento": ["Pix", "Transferência"],
+            "mes": ["2026-01", "2026-01"],
+        }
+    )
+    banco = tmp_path / "dados" / "financeiro.db"
+
+    salvar_sqlite(df, banco)
+
+    import sqlite3
+
+    with sqlite3.connect(banco) as conexao:
+        quantidade = conexao.execute(
+            "SELECT COUNT(*) FROM transacoes"
+        ).fetchone()[0]
+        total = conexao.execute(
+            "SELECT SUM(valor) FROM transacoes"
+        ).fetchone()[0]
+
+    assert quantidade == 2
+    assert total == pytest.approx(110.50)
