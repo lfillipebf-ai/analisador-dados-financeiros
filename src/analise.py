@@ -2,6 +2,7 @@ from pathlib import Path
 import sqlite3
 
 import matplotlib.pyplot as plt
+import numpy as np
 import pandas as pd
 from matplotlib.ticker import FuncFormatter
 
@@ -47,8 +48,10 @@ def carregar_dados(data_file: Path = DATA_FILE) -> pd.DataFrame:
             )
 
     ids = pd.to_numeric(df["id"], errors="coerce")
-    if ids.isna().any() or (ids % 1 != 0).any():
-        raise ValueError("A coluna 'id' deve conter apenas números inteiros.")
+    if ids.isna().any() or not np.isfinite(ids).all() or (ids % 1 != 0).any():
+        raise ValueError("A coluna 'id' deve conter apenas números inteiros válidos.")
+    if (ids < 0).any() or (ids > np.iinfo("int64").max).any():
+        raise ValueError("Os IDs devem estar dentro do intervalo de inteiros permitido.")
     if ids.duplicated().any():
         raise ValueError("A coluna 'id' não pode conter valores duplicados.")
     df["id"] = ids.astype("int64")
@@ -60,8 +63,9 @@ def carregar_dados(data_file: Path = DATA_FILE) -> pd.DataFrame:
     df["data"] = datas
 
     valores = pd.to_numeric(df["valor"], errors="coerce")
-    if valores.isna().any():
-        linhas = (df.index[valores.isna()] + 2).tolist()
+    invalidos = valores.isna() | ~np.isfinite(valores)
+    if invalidos.any():
+        linhas = (df.index[invalidos] + 2).tolist()
         raise ValueError(f"Valores monetários inválidos no CSV (linhas: {linhas}).")
     if (valores < 0).any():
         raise ValueError("A coluna 'valor' não pode conter valores negativos.")
@@ -136,11 +140,21 @@ def gerar_graficos(df: pd.DataFrame, output_dir: Path = OUTPUT_DIR) -> None:
     fig, ax = plt.subplots(figsize=(10, 6))
     if not despesas.empty:
         barras = ax.barh(despesas.index, despesas.values)
-        ax.bar_label(barras, labels=[formatar_reais(v, 0) for v in despesas.values],
-                     padding=5, fontsize=9)
+        ax.bar_label(
+            barras,
+            labels=[formatar_reais(v, 0) for v in despesas.values],
+            padding=5,
+            fontsize=9,
+        )
     else:
-        ax.text(0.5, 0.5, "Nenhuma despesa registrada",
-                ha="center", va="center", transform=ax.transAxes)
+        ax.text(
+            0.5,
+            0.5,
+            "Nenhuma despesa registrada",
+            ha="center",
+            va="center",
+            transform=ax.transAxes,
+        )
     ax.set_title("Despesas por categoria", loc="left", fontsize=15, pad=14)
     ax.set_xlabel("Valor (R$)")
     ax.set_ylabel("")
@@ -148,7 +162,11 @@ def gerar_graficos(df: pd.DataFrame, output_dir: Path = OUTPUT_DIR) -> None:
     ax.grid(axis="x", alpha=0.25)
     ax.set_axisbelow(True)
     fig.tight_layout()
-    fig.savefig(output_dir / "despesas_por_categoria.png", dpi=180, bbox_inches="tight")
+    fig.savefig(
+        output_dir / "despesas_por_categoria.png",
+        dpi=180,
+        bbox_inches="tight",
+    )
     plt.close(fig)
 
     mensal = (
@@ -170,7 +188,11 @@ def gerar_graficos(df: pd.DataFrame, output_dir: Path = OUTPUT_DIR) -> None:
     ax.legend(title="Tipo", frameon=False)
     ax.tick_params(axis="x", rotation=0)
     fig.tight_layout()
-    fig.savefig(output_dir / "evolucao_mensal.png", dpi=180, bbox_inches="tight")
+    fig.savefig(
+        output_dir / "evolucao_mensal.png",
+        dpi=180,
+        bbox_inches="tight",
+    )
     plt.close(fig)
 
     resumo = calcular_resumo_mensal(df).set_index("mes")
@@ -184,7 +206,11 @@ def gerar_graficos(df: pd.DataFrame, output_dir: Path = OUTPUT_DIR) -> None:
     ax.grid(axis="y", alpha=0.25)
     ax.tick_params(axis="x", rotation=0)
     fig.tight_layout()
-    fig.savefig(output_dir / "saldo_mensal.png", dpi=180, bbox_inches="tight")
+    fig.savefig(
+        output_dir / "saldo_mensal.png",
+        dpi=180,
+        bbox_inches="tight",
+    )
     plt.close(fig)
 
 
