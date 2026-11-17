@@ -1,7 +1,11 @@
 import pandas as pd
 import pytest
 
-from src.analise import carregar_dados, calcular_indicadores
+from src.analise import (
+    carregar_dados,
+    calcular_indicadores,
+    calcular_resumo_mensal,
+)
 
 
 def criar_csv(tmp_path, conteudo):
@@ -35,6 +39,28 @@ def test_calcular_indicadores_sem_receita():
     assert despesas == 100.0
     assert saldo == -100.0
     assert taxa == 0.0
+
+
+def test_calcular_resumo_mensal():
+    df = pd.DataFrame(
+        {
+            "mes": ["2026-01", "2026-01", "2026-02"],
+            "tipo": ["Receita", "Despesa", "Despesa"],
+            "valor": [1000.0, 400.0, 200.0],
+        }
+    )
+
+    resumo = calcular_resumo_mensal(df)
+
+    assert resumo["mes"].tolist() == ["2026-01", "2026-02"]
+    assert resumo.loc[0, "receitas"] == 1000.0
+    assert resumo.loc[0, "despesas"] == 400.0
+    assert resumo.loc[0, "saldo"] == 600.0
+    assert resumo.loc[0, "taxa_poupanca"] == pytest.approx(60.0)
+    assert resumo.loc[1, "receitas"] == 0.0
+    assert resumo.loc[1, "despesas"] == 200.0
+    assert resumo.loc[1, "saldo"] == -200.0
+    assert resumo.loc[1, "taxa_poupanca"] == 0.0
 
 
 def test_carregar_dados_valida_e_cria_coluna_mes(tmp_path):
