@@ -1,4 +1,5 @@
 import pandas as pd
+import sqlite3
 import pytest
 
 from src.analise import (
@@ -200,7 +201,6 @@ def test_carregar_dados_rejeita_id_fracionario(tmp_path):
         carregar_dados(arquivo)
 
 
-
 def test_carregar_dados_preserva_ids_inteiros_grandes(tmp_path):
     arquivo = criar_csv(
         tmp_path,
@@ -240,8 +240,6 @@ def test_salvar_sqlite_persiste_transacoes(tmp_path):
     banco = tmp_path / "dados" / "financeiro.db"
 
     salvar_sqlite(df, banco)
-
-    import sqlite3
 
     with sqlite3.connect(banco) as conexao:
         quantidade = conexao.execute(
