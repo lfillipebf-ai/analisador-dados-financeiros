@@ -140,7 +140,7 @@ O arquivo `sql/consultas.sql` reúne 12 consultas para SQLite:
 9. Despesas por forma de pagamento.
 10. Variação percentual das despesas em relação ao mês anterior.
 11. Quantidade de transações e valor médio por categoria.
-12. Histórico de transações por período.
+12. Histórico completo de transações, ordenado por data.
 
 As consultas demonstram o uso de `GROUP BY`, agregações, CTEs (`WITH`), `NULLIF`, `LAG` e funções de janela. Execute cada consulta individualmente no SQLite.
 
