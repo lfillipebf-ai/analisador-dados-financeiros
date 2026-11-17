@@ -1,3 +1,4 @@
+from decimal import Decimal, InvalidOperation
 from pathlib import Path
 import sqlite3
 
@@ -47,14 +48,24 @@ def carregar_dados(data_file: Path = DATA_FILE) -> pd.DataFrame:
                 f"(linhas do CSV: {linhas})."
             )
 
-    ids = pd.to_numeric(df["id"], errors="coerce")
-    if ids.isna().any() or not np.isfinite(ids).all() or (ids % 1 != 0).any():
-        raise ValueError("A coluna 'id' deve conter apenas números inteiros válidos.")
-    if (ids < 0).any() or (ids > np.iinfo("int64").max).any():
-        raise ValueError("Os IDs devem estar dentro do intervalo de inteiros permitido.")
-    if ids.duplicated().any():
+    ids = []
+    for valor_id in df["id"]:
+        try:
+            numero = Decimal(str(valor_id).strip())
+        except (InvalidOperation, ValueError):
+            raise ValueError(
+                "A coluna 'id' deve conter apenas números inteiros válidos."
+            ) from None
+
+        if not numero.is_finite() or numero != numero.to_integral_value():
+            raise ValueError("A coluna 'id' deve conter apenas números inteiros válidos.")
+        if numero < 0 or numero > Decimal(np.iinfo("int64").max):
+            raise ValueError("Os IDs devem estar dentro do intervalo de inteiros permitido.")
+        ids.append(int(numero))
+
+    if len(ids) != len(set(ids)):
         raise ValueError("A coluna 'id' não pode conter valores duplicados.")
-    df["id"] = ids.astype("int64")
+    df["id"] = pd.Series(ids, index=df.index, dtype="int64")
 
     datas = pd.to_datetime(df["data"], errors="coerce")
     if datas.isna().any():
