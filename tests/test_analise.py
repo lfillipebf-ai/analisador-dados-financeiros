@@ -251,3 +251,15 @@ def test_salvar_sqlite_persiste_transacoes(tmp_path):
 
     assert quantidade == 2
     assert total == pytest.approx(110.50)
+
+
+
+def test_carregar_dados_rejeita_arquivo_sem_coluna_id(tmp_path):
+    arquivo = criar_csv(
+        tmp_path,
+        "data,categoria,tipo,descricao,valor,forma_pagamento\n"
+        "2026-01-03,Alimentação,Despesa,Compra,10,Pix\n",
+    )
+
+    with pytest.raises(ValueError, match="Colunas obrigatórias ausentes"):
+        carregar_dados(arquivo)
