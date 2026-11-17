@@ -131,7 +131,7 @@ WHERE tipo = 'Despesa'
 GROUP BY categoria
 ORDER BY quantidade_transacoes DESC, valor_medio DESC;
 
--- 12. Histórico de transações por período
+-- 12. Histórico completo de transações
 SELECT
     date(data) AS data,
     tipo,
@@ -140,5 +140,4 @@ SELECT
     ROUND(valor, 2) AS valor,
     forma_pagamento
 FROM transacoes
-WHERE date(data) BETWEEN '2026-01-01' AND '2026-03-31'
 ORDER BY date(data), id;
