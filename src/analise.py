@@ -83,6 +83,31 @@ def calcular_indicadores(df: pd.DataFrame) -> tuple[float, float, float, float]:
     return receitas, despesas, saldo, float(taxa_poupanca)
 
 
+def calcular_resumo_mensal(df: pd.DataFrame) -> pd.DataFrame:
+    """Calcula receitas, despesas, saldo e taxa de poupança por mês."""
+    mensal = (
+        df.pivot_table(
+            index="mes",
+            columns="tipo",
+            values="valor",
+            aggfunc="sum",
+            fill_value=0,
+        )
+        .reindex(columns=["Receita", "Despesa"], fill_value=0)
+        .sort_index()
+    )
+
+    resumo = pd.DataFrame(index=mensal.index)
+    resumo["receitas"] = mensal["Receita"]
+    resumo["despesas"] = mensal["Despesa"]
+    resumo["saldo"] = resumo["receitas"] - resumo["despesas"]
+    resumo["taxa_poupanca"] = (
+        resumo["saldo"].div(resumo["receitas"].where(resumo["receitas"] != 0)) * 100
+    ).fillna(0.0)
+    resumo.index.name = "mes"
+    return resumo.reset_index()
+
+
 def salvar_sqlite(df: pd.DataFrame, db_file: Path = DB_FILE) -> None:
     """Salva as transações em um banco SQLite."""
     db_file.parent.mkdir(parents=True, exist_ok=True)
@@ -108,6 +133,7 @@ def gerar_graficos(df: pd.DataFrame, output_dir: Path = OUTPUT_DIR) -> None:
     plt.close()
 
     mensal = df.groupby(["mes", "tipo"])["valor"].sum().unstack(fill_value=0)
+    mensal = mensal.reindex(columns=["Receita", "Despesa"], fill_value=0)
     ax = mensal.plot(kind="bar", title="Receitas x Despesas por mês")
     ax.set_ylabel("Valor (R$)")
     ax.set_xlabel("Mês")
@@ -123,7 +149,7 @@ def salvar_resumo(
     taxa: float,
     output_dir: Path = OUTPUT_DIR,
 ) -> None:
-    """Salva os principais indicadores em CSV."""
+    """Salva os principais indicadores gerais em CSV."""
     output_dir.mkdir(parents=True, exist_ok=True)
     resumo = pd.DataFrame(
         {
@@ -139,12 +165,24 @@ def salvar_resumo(
     resumo.to_csv(output_dir / "resumo.csv", index=False)
 
 
+def salvar_resumo_mensal(
+    resumo_mensal: pd.DataFrame,
+    output_dir: Path = OUTPUT_DIR,
+) -> None:
+    """Exporta os indicadores financeiros agrupados por mês."""
+    output_dir.mkdir(parents=True, exist_ok=True)
+    resumo_mensal.to_csv(output_dir / "resumo_mensal.csv", index=False)
+
+
 def main() -> None:
     df = carregar_dados()
     receitas, despesas, saldo, taxa = calcular_indicadores(df)
+    resumo_mensal = calcular_resumo_mensal(df)
+
     salvar_sqlite(df)
     gerar_graficos(df)
     salvar_resumo(receitas, despesas, saldo, taxa)
+    salvar_resumo_mensal(resumo_mensal)
 
     print("=== RESUMO FINANCEIRO ===")
     print(f"Receitas: R$ {receitas:,.2f}")
