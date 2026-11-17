@@ -15,7 +15,7 @@ WHERE tipo = 'Despesa';
 
 -- 3. Saldo geral
 SELECT ROUND(
-    SUM(CASE WHEN tipo = 'Receita' THEN valor ELSE -valor END),
+    COALESCE(SUM(CASE WHEN tipo = 'Receita' THEN valor ELSE -valor END), 0),
     2
 ) AS saldo
 FROM transacoes;
