@@ -52,16 +52,6 @@ Os arquivos gerados ficam em `output/`, diretório que não é versionado.
 
 ## Como executar
 
-### Abrir o notebook
-
-Com as dependências instaladas, execute na raiz do projeto:
-
-```bash
-jupyter notebook notebooks/analise_financeira.ipynb
-```
-
-O notebook também localiza o CSV quando aberto com a pasta `notebooks/` como diretório de trabalho.
-
 ### 1. Clonar o projeto
 
 ```bash
@@ -91,6 +81,16 @@ source .venv/bin/activate
 pip install -r requirements.txt
 ```
 
+### Abrir o notebook
+
+Na raiz do projeto, execute:
+
+```bash
+jupyter notebook notebooks/analise_financeira.ipynb
+```
+
+O notebook localiza o CSV tanto quando iniciado pela raiz quanto pela pasta `notebooks/`.
+
 ### 4. Executar a análise
 
 ```bash
@@ -106,13 +106,17 @@ A execução gera:
 - `output/evolucao_mensal.png` — comparação mensal entre receitas e despesas;
 - `output/saldo_mensal.png` — evolução do saldo ao longo dos meses.
 
-### 5. Executar os testes
+### 5. Consultar o banco e executar SQL
+
+Depois de executar a análise, o banco SQLite estará em `output/financeiro.db`. Abra esse arquivo em uma ferramenta compatível com SQLite e execute individualmente as instruções de `sql/consultas.sql`.
+
+### 6. Executar os testes
 
 ```bash
 pytest -v
 ```
 
-Os testes verificam os cálculos gerais e mensais, a criação dos três gráficos, a validação de arquivos CSV e a execução das consultas SQL sobre os dados do projeto.
+Os testes verificam os cálculos gerais e mensais, a criação dos três gráficos, a validação dos dados de entrada, a persistência no SQLite e os resultados esperados das consultas SQL.
 
 ## Exemplo de resultados
 
