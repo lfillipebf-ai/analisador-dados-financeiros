@@ -1,27 +1,27 @@
 # Analisador de Dados Financeiros
 
-Projeto de portfólio e estudo desenvolvido em **Python** para transformar transações financeiras fictícias em indicadores, consultas SQL e visualizações.
+Projeto de portfólio desenvolvido em **Python** para transformar transações financeiras fictícias em indicadores, consultas SQL e visualizações.
 
 ## Objetivo
 
-Praticar um fluxo completo de análise de dados:
+Praticar um fluxo de análise de dados com:
 
 - leitura e validação de dados CSV;
 - tratamento de valores e datas com Pandas;
 - cálculo de receitas, despesas, saldo e taxa de poupança;
-- consultas SQL com SQLite;
+- persistência dos dados em SQLite;
+- consultas SQL;
 - geração de gráficos com Matplotlib;
-- exportação de resultados em CSV;
+- exportação de indicadores em CSV;
 - testes automatizados com Pytest;
-- execução automática de validações pelo GitHub Actions.
+- integração contínua com GitHub Actions.
 
 ## Tecnologias
 
 - Python 3.11+
 - Pandas
 - Matplotlib
-- SQLite
-- SQL
+- SQLite e SQL
 - Jupyter Notebook
 - Pytest
 - GitHub Actions
@@ -46,7 +46,7 @@ analisador-dados-financeiros/
 └── README.md
 ```
 
-Os arquivos gerados pela execução ficam em `output/` e não são versionados.
+Os arquivos gerados ficam em `output/`, diretório que não é versionado.
 
 ## Como executar
 
@@ -57,13 +57,13 @@ git clone https://github.com/lfillipebf-ai/analisador-dados-financeiros.git
 cd analisador-dados-financeiros
 ```
 
-### 2. Criar ambiente virtual
+### 2. Criar e ativar o ambiente virtual
 
 Windows:
 
 ```bash
 python -m venv .venv
-.venv\Scripts\activate
+.venv\\Scripts\\activate
 ```
 
 Linux/macOS:
@@ -73,7 +73,7 @@ python3 -m venv .venv
 source .venv/bin/activate
 ```
 
-### 3. Instalar dependências
+### 3. Instalar as dependências
 
 ```bash
 pip install -r requirements.txt
@@ -85,29 +85,32 @@ pip install -r requirements.txt
 python src/analise.py
 ```
 
-A execução cria:
+A execução gera:
 
-- `output/financeiro.db` — banco SQLite;
-- `output/resumo.csv` — indicadores calculados;
-- `output/despesas_por_categoria.png` — gráfico de despesas;
-- `output/evolucao_mensal.png` — gráfico mensal.
+- `output/financeiro.db` — banco de dados SQLite;
+- `output/resumo.csv` — indicadores financeiros;
+- `output/despesas_por_categoria.png` — despesas agrupadas por categoria;
+- `output/evolucao_mensal.png` — comparação mensal entre receitas e despesas.
 
 ### 5. Executar os testes
 
 ```bash
-pytest
+pytest -v
 ```
 
-## SQL
+Os testes verificam o cálculo dos indicadores e a validação de arquivos CSV, incluindo colunas ausentes, datas inválidas, valores negativos, tipos desconhecidos, IDs duplicados e campos vazios.
 
-O arquivo `sql/consultas.sql` contém consultas para totais, saldo, despesas por categoria, receitas por categoria, evolução mensal, maiores despesas e formas de pagamento.
+## Consultas SQL
+
+O arquivo `sql/consultas.sql` contém exemplos de consultas para totais, saldo, despesas e receitas por categoria, evolução mensal, maiores despesas e formas de pagamento.
 
 ## Dados
 
-Os dados de `data/transacoes.csv` são **fictícios** e foram criados exclusivamente para fins educacionais e de portfólio. Não representam dados financeiros reais.
+Os registros de `data/transacoes.csv` são **fictícios**, criados exclusivamente para fins educacionais e de portfólio. Não representam dados financeiros reais.
 
 ## Autor
 
 **Luis Fillipe Backer Faria**
 
-GitHub: https://github.com/lfillipebf-ai
+- GitHub: https://github.com/lfillipebf-ai
+- Repositório: https://github.com/lfillipebf-ai/analisador-dados-financeiros
