@@ -104,6 +104,27 @@ pytest -v
 
 Os testes verificam os cálculos gerais e mensais, a criação dos três gráficos, a validação de arquivos CSV e a execução das consultas SQL sobre os dados do projeto.
 
+## Exemplo de resultados
+
+Com os 30 registros fictícios incluídos no CSV, os indicadores gerais são:
+
+| Indicador | Resultado |
+|---|---:|
+| Receitas | R$ 14.900,00 |
+| Despesas | R$ 6.583,70 |
+| Saldo | R$ 8.316,30 |
+| Taxa de poupança | 55,81% |
+
+Resumo mensal:
+
+| Mês | Receitas | Despesas | Saldo |
+|---|---:|---:|---:|
+| 2026-01 | R$ 4.850,00 | R$ 2.130,10 | R$ 2.719,90 |
+| 2026-02 | R$ 5.100,00 | R$ 2.185,30 | R$ 2.914,70 |
+| 2026-03 | R$ 4.950,00 | R$ 2.268,30 | R$ 2.681,70 |
+
+Esses valores são reproduzíveis a partir do arquivo de dados do repositório e não representam movimentações financeiras reais.
+
 ## Consultas SQL
 
 O arquivo `sql/consultas.sql` reúne 12 consultas para SQLite:
