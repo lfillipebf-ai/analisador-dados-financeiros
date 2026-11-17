@@ -180,8 +180,8 @@ def test_carregar_dados_rejeita_arquivo_vazio(tmp_path):
 def test_carregar_dados_rejeita_valor_infinito(tmp_path):
     arquivo = criar_csv(
         tmp_path,
-        "id,data,categoria,tipo,descricao,valor,forma_pagamento\\n"
-        "1,2026-01-03,Alimentação,Despesa,Compra,inf,Pix\\n",
+        "id,data,categoria,tipo,descricao,valor,forma_pagamento\n"
+        "1,2026-01-03,Alimentação,Despesa,Compra,inf,Pix\n",
     )
 
     with pytest.raises(ValueError, match="Valores monetários inválidos"):
@@ -191,8 +191,8 @@ def test_carregar_dados_rejeita_valor_infinito(tmp_path):
 def test_carregar_dados_rejeita_id_fracionario(tmp_path):
     arquivo = criar_csv(
         tmp_path,
-        "id,data,categoria,tipo,descricao,valor,forma_pagamento\\n"
-        "1.5,2026-01-03,Alimentação,Despesa,Compra,10,Pix\\n",
+        "id,data,categoria,tipo,descricao,valor,forma_pagamento\n"
+        "1.5,2026-01-03,Alimentação,Despesa,Compra,10,Pix\n",
     )
 
     with pytest.raises(ValueError, match="números inteiros válidos"):
