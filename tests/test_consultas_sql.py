@@ -30,6 +30,7 @@ def test_consultas_sql_executam_e_retornam_resultados_esperados():
                 consulta_atual = ""
 
         assert len(resultados) == 12
+        assert not consulta_atual.strip()
 
         assert resultados[0][0][0] == pytest.approx(14900.00)
         assert resultados[1][0][0] == pytest.approx(6583.70)
@@ -41,4 +42,8 @@ def test_consultas_sql_executam_e_retornam_resultados_esperados():
             ("2026-03", 4950.0, 2268.3, 2681.7),
         ]
 
+        assert len(resultados[3]) > 0
+        assert sum(linha[2] for linha in resultados[3]) == pytest.approx(100.0)
+        assert len(resultados[7]) == 5
+        assert len(resultados[9]) == 3
         assert len(resultados[11]) == 30
