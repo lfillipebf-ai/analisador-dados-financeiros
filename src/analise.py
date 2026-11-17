@@ -26,7 +26,7 @@ TIPOS_VALIDOS = {"Receita", "Despesa"}
 
 def carregar_dados(data_file: Path = DATA_FILE) -> pd.DataFrame:
     """Carrega e valida as transações financeiras antes da análise."""
-    df = pd.read_csv(data_file)
+    df = pd.read_csv(data_file, dtype={"id": "string"})
 
     missing = COLUNAS_OBRIGATORIAS - set(df.columns)
     if missing:
