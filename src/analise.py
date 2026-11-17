@@ -9,25 +9,68 @@ DATA_FILE = BASE_DIR / "data" / "transacoes.csv"
 OUTPUT_DIR = BASE_DIR / "output"
 DB_FILE = OUTPUT_DIR / "financeiro.db"
 
+COLUNAS_OBRIGATORIAS = {
+    "id",
+    "data",
+    "categoria",
+    "tipo",
+    "descricao",
+    "valor",
+    "forma_pagamento",
+}
+TIPOS_VALIDOS = {"Receita", "Despesa"}
+
 
 def carregar_dados(data_file: Path = DATA_FILE) -> pd.DataFrame:
-    """Carrega e prepara as transações financeiras."""
-    df = pd.read_csv(data_file, parse_dates=["data"])
+    """Carrega e valida as transações financeiras antes da análise."""
+    df = pd.read_csv(data_file)
 
-    required_columns = {"id", "data", "categoria", "tipo", "descricao", "valor", "forma_pagamento"}
-    missing = required_columns - set(df.columns)
+    missing = COLUNAS_OBRIGATORIAS - set(df.columns)
     if missing:
-        raise ValueError(f"Colunas obrigatórias ausentes: {', '.join(sorted(missing))}")
+        raise ValueError(
+            f"Colunas obrigatórias ausentes: {', '.join(sorted(missing))}"
+        )
 
-    df["valor"] = pd.to_numeric(df["valor"], errors="coerce")
-    df = df.dropna(subset=["data", "valor"]).copy()
-    df["mes"] = df["data"].dt.to_period("M").astype(str)
+    if df.empty:
+        raise ValueError("O arquivo não contém transações.")
 
-    tipos_validos = {"Receita", "Despesa"}
-    tipos_invalidos = set(df["tipo"].dropna().unique()) - tipos_validos
+    campos_texto = ["categoria", "tipo", "descricao", "forma_pagamento"]
+    for coluna in campos_texto:
+        df[coluna] = df[coluna].astype("string").str.strip()
+        invalidos = df[coluna].isna() | df[coluna].eq("")
+        if invalidos.any():
+            linhas = (df.index[invalidos] + 2).tolist()
+            raise ValueError(
+                f"Valores ausentes ou vazios na coluna '{coluna}' "
+                f"(linhas do CSV: {linhas})."
+            )
+
+    ids = pd.to_numeric(df["id"], errors="coerce")
+    if ids.isna().any() or (ids % 1 != 0).any():
+        raise ValueError("A coluna 'id' deve conter apenas números inteiros.")
+    if ids.duplicated().any():
+        raise ValueError("A coluna 'id' não pode conter valores duplicados.")
+    df["id"] = ids.astype("int64")
+
+    datas = pd.to_datetime(df["data"], errors="coerce")
+    if datas.isna().any():
+        linhas = (df.index[datas.isna()] + 2).tolist()
+        raise ValueError(f"Datas inválidas no CSV (linhas: {linhas}).")
+    df["data"] = datas
+
+    valores = pd.to_numeric(df["valor"], errors="coerce")
+    if valores.isna().any():
+        linhas = (df.index[valores.isna()] + 2).tolist()
+        raise ValueError(f"Valores monetários inválidos no CSV (linhas: {linhas}).")
+    if (valores < 0).any():
+        raise ValueError("A coluna 'valor' não pode conter valores negativos.")
+    df["valor"] = valores.astype(float)
+
+    tipos_invalidos = sorted(set(df["tipo"].unique()) - TIPOS_VALIDOS)
     if tipos_invalidos:
-        raise ValueError(f"Tipos de transação inválidos: {sorted(tipos_invalidos)}")
+        raise ValueError(f"Tipos de transação inválidos: {tipos_invalidos}")
 
+    df["mes"] = df["data"].dt.to_period("M").astype(str)
     return df
 
 
@@ -73,12 +116,23 @@ def gerar_graficos(df: pd.DataFrame, output_dir: Path = OUTPUT_DIR) -> None:
     plt.close()
 
 
-def salvar_resumo(receitas: float, despesas: float, saldo: float, taxa: float, output_dir: Path = OUTPUT_DIR) -> None:
+def salvar_resumo(
+    receitas: float,
+    despesas: float,
+    saldo: float,
+    taxa: float,
+    output_dir: Path = OUTPUT_DIR,
+) -> None:
     """Salva os principais indicadores em CSV."""
     output_dir.mkdir(parents=True, exist_ok=True)
     resumo = pd.DataFrame(
         {
-            "indicador": ["Total de receitas", "Total de despesas", "Saldo", "Taxa de poupança"],
+            "indicador": [
+                "Total de receitas",
+                "Total de despesas",
+                "Saldo",
+                "Taxa de poupança",
+            ],
             "valor": [receitas, despesas, saldo, taxa],
         }
     )
