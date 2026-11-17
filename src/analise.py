@@ -58,9 +58,13 @@ def carregar_dados(data_file: Path = DATA_FILE) -> pd.DataFrame:
             ) from None
 
         if not numero.is_finite() or numero != numero.to_integral_value():
-            raise ValueError("A coluna 'id' deve conter apenas números inteiros válidos.")
+            raise ValueError(
+                "A coluna 'id' deve conter apenas números inteiros válidos."
+            )
         if numero < 0 or numero > Decimal(np.iinfo("int64").max):
-            raise ValueError("Os IDs devem estar dentro do intervalo de inteiros permitido.")
+            raise ValueError(
+                "Os IDs devem estar dentro do intervalo de inteiros permitido."
+            )
         ids.append(int(numero))
 
     if len(ids) != len(set(ids)):
