@@ -52,6 +52,16 @@ Os arquivos gerados ficam em `output/`, diretório que não é versionado.
 
 ## Como executar
 
+### Abrir o notebook
+
+Com as dependências instaladas, execute na raiz do projeto:
+
+```bash
+jupyter notebook notebooks/analise_financeira.ipynb
+```
+
+O notebook também localiza o CSV quando aberto com a pasta `notebooks/` como diretório de trabalho.
+
 ### 1. Clonar o projeto
 
 ```bash
@@ -143,6 +153,22 @@ O arquivo `sql/consultas.sql` reúne 12 consultas para SQLite:
 12. Histórico completo de transações, ordenado por data.
 
 As consultas demonstram o uso de `GROUP BY`, agregações, CTEs (`WITH`), `NULLIF`, `LAG` e funções de janela. Execute cada consulta individualmente no SQLite.
+
+## Estrutura dos dados
+
+O arquivo `data/transacoes.csv` contém as seguintes colunas:
+
+| Coluna | Descrição |
+|---|---|
+| `id` | Identificador inteiro e único da transação |
+| `data` | Data da movimentação no formato ISO |
+| `categoria` | Categoria financeira |
+| `tipo` | Natureza da movimentação: Receita ou Despesa |
+| `descricao` | Descrição da transação |
+| `valor` | Valor numérico não negativo em reais |
+| `forma_pagamento` | Meio utilizado na movimentação |
+
+A coluna `mes` é derivada da data durante o processamento e não precisa existir no CSV original.
 
 ## Dados
 
