@@ -5,6 +5,7 @@ from src.analise import (
     carregar_dados,
     calcular_indicadores,
     calcular_resumo_mensal,
+    gerar_graficos,
 )
 
 
@@ -61,6 +62,31 @@ def test_calcular_resumo_mensal():
     assert resumo.loc[1, "despesas"] == 200.0
     assert resumo.loc[1, "saldo"] == -200.0
     assert resumo.loc[1, "taxa_poupanca"] == 0.0
+
+
+def test_gerar_graficos_cria_tres_arquivos(tmp_path):
+    df = pd.DataFrame(
+        {
+            "mes": ["2026-01", "2026-01", "2026-02"],
+            "tipo": ["Receita", "Despesa", "Despesa"],
+            "categoria": ["Salário", "Moradia", "Alimentação"],
+            "valor": [1000.0, 400.0, 200.0],
+        }
+    )
+
+    gerar_graficos(df, tmp_path)
+
+    assert (tmp_path / "despesas_por_categoria.png").is_file()
+    assert (tmp_path / "evolucao_mensal.png").is_file()
+    assert (tmp_path / "saldo_mensal.png").is_file()
+    assert all(
+        (tmp_path / nome).stat().st_size > 0
+        for nome in [
+            "despesas_por_categoria.png",
+            "evolucao_mensal.png",
+            "saldo_mensal.png",
+        ]
+    )
 
 
 def test_carregar_dados_valida_e_cria_coluna_mes(tmp_path):
