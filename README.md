@@ -11,7 +11,7 @@ Praticar um fluxo de análise de dados com:
 - cálculo de receitas, despesas, saldo e taxa de poupança;
 - análise mensal de receitas, despesas, saldo e taxa de poupança;
 - persistência dos dados em SQLite;
-- consultas SQL;
+- consultas SQL com agregações, CTEs e funções de janela;
 - geração de gráficos com Matplotlib;
 - exportação de indicadores gerais e mensais em CSV;
 - testes automatizados com Pytest;
@@ -105,7 +105,20 @@ Os testes verificam os cálculos gerais e mensais, a criação dos três gráfic
 
 ## Consultas SQL
 
-O arquivo `sql/consultas.sql` contém exemplos de consultas para totais, saldo, despesas e receitas por categoria, evolução mensal, maiores despesas e formas de pagamento.
+O arquivo `sql/consultas.sql` reúne 12 consultas para SQLite:
+
+1. Totais de receitas e despesas e saldo geral.
+2. Despesas por categoria e participação percentual no total.
+3. Receitas por categoria.
+4. Resumo mensal com receitas, despesas e saldo.
+5. Taxa de poupança mensal.
+6. Cinco maiores despesas.
+7. Despesas por forma de pagamento.
+8. Variação percentual das despesas em relação ao mês anterior.
+9. Quantidade de transações e valor médio por categoria.
+10. Histórico de transações por período.
+
+As consultas também demonstram o uso de `GROUP BY`, agregações, CTEs (`WITH`), `NULLIF`, `LAG` e funções de janela. Execute cada consulta individualmente no SQLite.
 
 ## Dados
 
