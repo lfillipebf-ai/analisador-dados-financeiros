@@ -4,3 +4,4 @@ __pycache__/
 .ipynb_checkpoints/
 output/
 *.pyc
+\n.coverage\nhtmlcov/\n.ruff_cache/\n.mypy_cache/\n
