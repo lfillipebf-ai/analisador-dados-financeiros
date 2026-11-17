@@ -40,7 +40,8 @@ analisador-dados-financeiros/
 ├── src/
 │   └── analise.py
 ├── tests/
-│   └── test_analise.py
+│   ├── test_analise.py
+│   └── test_consultas_sql.py
 ├── .github/workflows/
 │   └── ci.yml
 ├── requirements.txt
@@ -101,24 +102,26 @@ A execução gera:
 pytest -v
 ```
 
-Os testes verificam os cálculos gerais e mensais, a criação dos três gráficos e a validação de arquivos CSV, incluindo colunas ausentes, datas inválidas, valores negativos, tipos desconhecidos, IDs duplicados e campos vazios.
+Os testes verificam os cálculos gerais e mensais, a criação dos três gráficos, a validação de arquivos CSV e a execução das consultas SQL sobre os dados do projeto.
 
 ## Consultas SQL
 
 O arquivo `sql/consultas.sql` reúne 12 consultas para SQLite:
 
-1. Totais de receitas e despesas e saldo geral.
-2. Despesas por categoria e participação percentual no total.
-3. Receitas por categoria.
-4. Resumo mensal com receitas, despesas e saldo.
-5. Taxa de poupança mensal.
-6. Cinco maiores despesas.
-7. Despesas por forma de pagamento.
-8. Variação percentual das despesas em relação ao mês anterior.
-9. Quantidade de transações e valor médio por categoria.
-10. Histórico de transações por período.
+1. Total de receitas.
+2. Total de despesas.
+3. Saldo geral.
+4. Despesas por categoria e participação percentual no total.
+5. Receitas por categoria.
+6. Resumo mensal com receitas, despesas e saldo.
+7. Taxa de poupança mensal.
+8. Cinco maiores despesas.
+9. Despesas por forma de pagamento.
+10. Variação percentual das despesas em relação ao mês anterior.
+11. Quantidade de transações e valor médio por categoria.
+12. Histórico de transações por período.
 
-As consultas também demonstram o uso de `GROUP BY`, agregações, CTEs (`WITH`), `NULLIF`, `LAG` e funções de janela. Execute cada consulta individualmente no SQLite.
+As consultas demonstram o uso de `GROUP BY`, agregações, CTEs (`WITH`), `NULLIF`, `LAG` e funções de janela. Execute cada consulta individualmente no SQLite.
 
 ## Dados
 
