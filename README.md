@@ -9,10 +9,11 @@ Praticar um fluxo de análise de dados com:
 - leitura e validação de dados CSV;
 - tratamento de valores e datas com Pandas;
 - cálculo de receitas, despesas, saldo e taxa de poupança;
+- análise mensal de receitas, despesas, saldo e taxa de poupança;
 - persistência dos dados em SQLite;
 - consultas SQL;
 - geração de gráficos com Matplotlib;
-- exportação de indicadores em CSV;
+- exportação de indicadores gerais e mensais em CSV;
 - testes automatizados com Pytest;
 - integração contínua com GitHub Actions.
 
@@ -88,7 +89,8 @@ python src/analise.py
 A execução gera:
 
 - `output/financeiro.db` — banco de dados SQLite;
-- `output/resumo.csv` — indicadores financeiros;
+- `output/resumo.csv` — indicadores financeiros gerais;
+- `output/resumo_mensal.csv` — receitas, despesas, saldo e taxa de poupança por mês;
 - `output/despesas_por_categoria.png` — despesas agrupadas por categoria;
 - `output/evolucao_mensal.png` — comparação mensal entre receitas e despesas.
 
@@ -98,7 +100,7 @@ A execução gera:
 pytest -v
 ```
 
-Os testes verificam o cálculo dos indicadores e a validação de arquivos CSV, incluindo colunas ausentes, datas inválidas, valores negativos, tipos desconhecidos, IDs duplicados e campos vazios.
+Os testes verificam os cálculos gerais e mensais e a validação de arquivos CSV, incluindo colunas ausentes, datas inválidas, valores negativos, tipos desconhecidos, IDs duplicados e campos vazios.
 
 ## Consultas SQL
 
